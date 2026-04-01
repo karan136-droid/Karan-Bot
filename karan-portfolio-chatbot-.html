@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Karan Jhaveri — Portfolio Assistant</title>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{-webkit-text-size-adjust:100%}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#f5f4f0;min-height:100vh;min-height:100dvh;display:flex;align-items:flex-start;justify-content:center;padding:1rem 0.75rem;padding-bottom:env(safe-area-inset-bottom)}
+.card{background:#fff;border-radius:16px;border:1px solid #e5e3dc;max-width:700px;width:100%;padding:1.25rem;box-shadow:0 2px 16px rgba(0,0,0,0.07)}
+.hdr{display:flex;align-items:center;gap:12px;margin-bottom:1rem;padding-bottom:1rem;border-bottom:1px solid #e5e3dc;flex-wrap:nowrap}
+.avatar{width:52px;height:52px;border-radius:50%;object-fit:cover;border:2px solid #ddd;flex-shrink:0}
+.hdr-info{min-width:0;flex:1}
+.hdr-info h1{font-size:16px;font-weight:600;color:#1a1a1a;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.hdr-info p{font-size:12px;color:#666;margin-top:2px;line-height:1.4}
+.hdr-links{display:flex;gap:6px;margin-top:6px;flex-wrap:wrap}
+.hdr-links a{font-size:11px;color:#1a73e8;text-decoration:none;border:1px solid #c5d8f7;padding:3px 9px;border-radius:999px;background:#f0f6ff;white-space:nowrap;-webkit-tap-highlight-color:transparent}
+.hdr-links a:active{background:#dbeaff}
+.role-pills{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:12px}
+.pill{font-size:11px;padding:5px 11px;border:1px solid #ddd;border-radius:999px;cursor:pointer;color:#555;background:#fff;transition:all 0.15s;-webkit-tap-highlight-color:transparent;user-select:none;touch-action:manipulation}
+.pill:active,.pill.active{background:#1a73e8;color:#fff;border-color:#1a73e8}
+.msgs{min-height:220px;max-height:380px;overflow-y:auto;-webkit-overflow-scrolling:touch;display:flex;flex-direction:column;gap:10px;padding:4px 0 8px;margin-bottom:8px}
+.msg{max-width:88%;padding:9px 13px;border-radius:14px;font-size:14px;line-height:1.65;word-break:break-word}
+.msg.u{align-self:flex-end;background:#1a73e8;color:#fff}
+.msg.b{align-self:flex-start;background:#f5f4f0;color:#1a1a1a;border:1px solid #e5e3dc;white-space:pre-wrap}
+.msg.typing{opacity:0.45}
+.sep{height:1px;background:#e5e3dc;margin:8px 0}
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:10px}
+.chip{font-size:11px;padding:5px 11px;border:1px solid #ddd;border-radius:999px;cursor:pointer;color:#555;background:#fff;-webkit-tap-highlight-color:transparent;touch-action:manipulation;user-select:none}
+.chip:active{background:#f5f4f0}
+.inp-row{display:flex;gap:8px;align-items:flex-end}
+textarea{flex:1;resize:none;padding:10px 12px;font-size:16px;border-radius:10px;border:1px solid #ddd;background:#fff;color:#1a1a1a;font-family:inherit;min-height:44px;max-height:120px;line-height:1.5;outline:none;-webkit-appearance:none;appearance:none}
+textarea:focus{border-color:#1a73e8}
+.send-btn{padding:0 18px;border-radius:10px;border:none;background:#1a73e8;color:#fff;cursor:pointer;font-size:14px;font-weight:500;height:44px;white-space:nowrap;flex-shrink:0;-webkit-tap-highlight-color:transparent;touch-action:manipulation}
+.send-btn:active{background:#1558b0}
+.send-btn:disabled{background:#b0c4e8;cursor:not-allowed}
+.disc{font-size:10px;color:#aaa;text-align:center;margin-top:10px;line-height:1.5}
+@media(max-width:480px){
+  body{padding:0.5rem 0.5rem;padding-bottom:env(safe-area-inset-bottom)}
+  .card{border-radius:12px;padding:1rem 0.875rem}
+  .hdr-info h1{font-size:15px}
+  .hdr-info p{font-size:11px}
+  .msgs{max-height:320px;min-height:180px}
+  .msg{font-size:13px;max-width:92%}
+  textarea{font-size:16px}
+}
+</style>
+</head>
+<body>
+<div class="card">
+  <div class="hdr">
+    <img class="avatar" id="photo" alt="Karan Jhaveri"/>
+    <div class="hdr-info">
+      <h1>Karan Jhaveri</h1>
+      <p>MS Technology Management · Gies College of Business, UIUC · Class of 2026</p>
+      <div class="hdr-links">
+        <a href="https://www.linkedin.com/in/karan-jhaveri-2aa22a200/" target="_blank">🔗 LinkedIn</a>
+        <a href="https://github.com/karan136-droid" target="_blank">💻 GitHub</a>
+      </div>
+    </div>
+  </div>
+  <div class="role-pills" id="rolePills">
+    <div class="pill active" data-role="all">All roles</div>
+    <div class="pill" data-role="data">Data Analyst</div>
+    <div class="pill" data-role="ba">Business Analyst</div>
+    <div class="pill" data-role="pm">Project Management</div>
+    <div class="pill" data-role="product">Product Management</div>
+    <div class="pill" data-role="design">Product Design</div>
+  </div>
+  <div class="msgs" id="msgs"></div>
+  <div class="sep"></div>
+  <div class="chips" id="chips"></div>
+  <div class="inp-row">
+    <textarea id="inp" placeholder="Ask anything about Karan's background, skills, or experience..." rows="1"></textarea>
+    <button class="send-btn" id="sendBtn">Ask ↗</button>
+  </div>
+  <div class="disc">⚠️ This chatbot reflects Karan Jhaveri's profile as of April 1, 2026. Information may not reflect updates after this date.</div>
+</div>
+
+<script>
+document.getElementById("photo").src = "data:image/jpeg;base64,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";
+
+// Each entry: { match: fn(q) => bool, score: priority (higher wins), ans }
+const KB = [
+
+  // ── Very specific combos first (high score) ──────────────────────────────
+
+  { score:100, match: q => has(q,"data") && has(q,"certif"),
+    ans:`Karan's data-specific certifications:\n\n• Applying Data Analytics in Marketing — Coursera/UIUC (Mar 2026)\n• DataCamp: Data Manipulation with pandas, Data Manipulation in SQL, Joining Data in SQL, Introduction to APIs in Python\n• Topics in Business Intelligence — currently enrolled at Gies (Spring 2026)\n• Data Analytics for Marketing Applications — currently enrolled at Gies (Spring 2026)` },
+
+  { score:100, match: q => has(q,"python") && has(q,"certif"),
+    ans:`Python certifications and courses:\n\n• Introduction to Python — DataCamp ✓\n• Intermediate Python — DataCamp ✓\n• Data Manipulation with pandas — DataCamp ✓\n• Introduction to APIs in Python — DataCamp ✓\n\nHe also applied Python professionally at Marsh McLennan to analyze 500K+ records and build analytical prototypes.` },
+
+  { score:100, match: q => has(q,"sql") && has(q,"certif"),
+    ans:`SQL certifications and courses:\n\n• Data Manipulation in SQL — DataCamp ✓\n• Joining Data in SQL — DataCamp ✓\n\nHe applied SQL professionally at Marsh McLennan for large-scale data analysis (500K+ records).` },
+
+  { score:100, match: q => has(q,"marketing") && has(q,"certif"),
+    ans:`Marketing certifications:\n\n• Applying Data Analytics in Marketing — Coursera/UIUC (Mar 2026)\n• Developing a Winning Marketing Strategy — Coursera/UIUC (Oct 2025)\n• Developing a Marketing Mix for Growth — Coursera/UIUC (Oct 2025)\n\nPlus Marketing Management (A) completed at Gies, and Data Analytics for Marketing Applications currently in progress.` },
+
+  { score:100, match: q => has(q,"finance") && has(q,"certif"),
+    ans:`Finance certifications:\n\n• Financial Accounting: Foundations — Coursera/UIUC (Aug 2025)\n• Introduction to Finance: The Basics — Coursera/UIUC (Jul 2025)\n\nPlus Accounting & Finance for Managers (A) completed at Gies.` },
+
+  { score:100, match: q => has(q,"communication") && has(q,"certif"),
+    ans:`Communication certifications:\n\n• Communicating Across Cultures — LinkedIn Learning (Oct 2025)\n• Developing Cross-Cultural Intelligence — LinkedIn Learning (Nov 2025)\n• Interpersonal Communication — LinkedIn Learning (Dec 2025)\n• Body Language Essentials for the Working Professional — LinkedIn Learning (Oct 2025)\n• Improving Your Listening Skills — LinkedIn Learning (Nov 2025)\n• Business Etiquette: Phone, Email, and Text — LinkedIn Learning (Nov 2025)\n• Creating Great First Impressions — LinkedIn Learning (Oct 2025)\n• How to Make a Positive First Impression with Hiring Managers — LinkedIn Learning (Oct 2025)\n\nAlso completed Communication Strategy in Business (A) at Gies.` },
+
+  { score:100, match: q => has(q,"leadership") && has(q,"certif"),
+    ans:`Leadership & professional development certifications:\n\n• Gies Professional Pathway Foundations: Pre-Arrival Course — Gies/UIUC (Oct 2025)\n• Working with Difficult People — LinkedIn Learning (Dec 2025)\n• Mistakes You Should Avoid at Work — LinkedIn Learning (Nov 2025)\n\nPlus Leadership & Teams (A) completed at Gies.` },
+
+  { score:100, match: q => has(q,"aws") || (has(q,"cloud") && has(q,"certif")),
+    ans:`Cloud certification:\n\n• AWS Educate Introduction to Cloud 101 — Amazon Web Services (Aug 2023)\n\nHe also studied Cloud Computing during his B.Tech at NMIMS.` },
+
+  { score:100, match: q => has(q,"linkedin") && has(q,"certif"),
+    ans:`LinkedIn Learning certifications (all 2025):\n\n• Developing Cross-Cultural Intelligence (Nov 2025)\n• Working with Difficult People (Dec 2025)\n• Interpersonal Communication (Dec 2025)\n• Mistakes You Should Avoid at Work (Nov 2025)\n• Improving Your Listening Skills (Nov 2025)\n• Business Etiquette: Phone, Email, and Text (Nov 2025)\n• Communicating Across Cultures (Oct 2025)\n• Body Language Essentials for the Working Professional (Oct 2025)\n• Creating Great First Impressions (Oct 2025)\n• How to Make a Positive First Impression with Hiring Managers (Oct 2025)` },
+
+  { score:100, match: q => has(q,"coursera") && has(q,"certif"),
+    ans:`Coursera certifications (all via University of Illinois Urbana-Champaign):\n\n• Applying Data Analytics in Marketing (Mar 2026)\n• Developing a Winning Marketing Strategy (Oct 2025)\n• Developing a Marketing Mix for Growth (Oct 2025)\n• Financial Accounting: Foundations (Aug 2025)\n• Introduction to Finance: The Basics (Jul 2025)` },
+
+  { score:100, match: q => has(q,"datacamp"),
+    ans:`DataCamp completed courses:\n\n• Introduction to Python ✓\n• Intermediate Python ✓\n• Data Manipulation with pandas ✓\n• Introduction to APIs in Python ✓\n• Data Manipulation in SQL ✓\n• Joining Data in SQL ✓\n\nThese complement his professional Python and SQL work at Marsh McLennan.` },
+
+  // ── Python / SQL / specific tools ────────────────────────────────────────
+
+  { score:90, match: q => has(q,"python"),
+    ans:`Python experience:\n\nKaran used Python professionally at Marsh McLennan to build analytical prototypes and validate hypotheses from 500K+ records. He's also completed DataCamp's Python track: Introduction to Python, Intermediate Python, Data Manipulation with pandas, and Introduction to APIs in Python.\n\nAdditionally, he used Python during his NPCIL internship for the Android OS Hardening Tool.` },
+
+  { score:90, match: q => has(q,"sql"),
+    ans:`SQL experience:\n\nApplied SQL at Marsh McLennan for large-scale data querying and analysis (500K+ records). Completed two DataCamp SQL courses: Data Manipulation in SQL and Joining Data in SQL. Also studied Database Management Systems during his B.Tech at NMIMS.` },
+
+  { score:90, match: q => has(q,"power bi") || has(q,"powerbi"),
+    ans:`Power BI experience:\n\nKaran built interactive insight dashboards at Marsh McLennan using Power BI, transforming complex 500K+ record datasets into clear, actionable visuals for stakeholder decision-making. He also has experience with Tableau and SAS Visual Analytics from his NMIMS coursework (Visual Analytics course).` },
+
+  { score:90, match: q => has(q,"power apps") || has(q,"powerapps"),
+    ans:`Power Apps experience:\n\nBuilt two major Power Apps solutions:\n\n1. Visitor Management System at Allcargo — integrated with Dataverse and Power Automate, serving 2,000+ monthly users across 12+ warehouses.\n2. Internal workflow tools at Marsh McLennan — used to automate 3 manual business processes.\n\nThis low-code expertise is a strong differentiator for BA and PM roles.` },
+
+  { score:90, match: q => has(q,"power automate") || has(q,"automate"),
+    ans:`Power Automate experience:\n\nUsed Power Automate to:\n• Automate 3 manual business processes at Marsh McLennan — reduced friction and improved scalability.\n• Build notification and data-flow automation for the Allcargo VMS — enabled real-time tracking across 12+ warehouses.\n\nPaired with Power Apps and Dataverse to create end-to-end low-code solutions.` },
+
+  { score:90, match: q => has(q,"tableau"),
+    ans:`Tableau is part of Karan's analytics toolkit, studied during his Visual Analytics coursework at NMIMS. His primary enterprise visualization tool is Power BI (used professionally at Marsh McLennan). He also has experience with SAS Visual Analytics and Weka.` },
+
+  // ── Companies ─────────────────────────────────────────────────────────────
+
+  { score:90, match: q => has(q,"marsh") || has(q,"mclennan"),
+    ans:`Marsh McLennan — Specialist, Data Analytics & Insights (Sep 2024 – Jul 2025):\n\n• Analyzed 500K+ records using Python, SQL, and Power BI to validate hypotheses and support modelling decisions.\n• Built interactive dashboards that improved the clarity and usability of complex analytics for stakeholders.\n• Automated 3 manual workflows using Power Apps and Power Automate, improving process scalability.\n• Mapped stakeholder decision journeys — translating raw data into behavioral insights.` },
+
+  { score:90, match: q => has(q,"allcargo") || has(q,"vms") || has(q,"visitor"),
+    ans:`Allcargo Supply Chain — Business Excellence Intern (Dec 2023 – Jun 2024):\n\n• Conducted field observations and stakeholder interviews across 12+ warehouses to map visitor entry journeys.\n• Designed and launched a Power Apps Visitor Management System integrated with Dataverse and Power Automate.\n• The VMS served 2,000+ monthly users and reduced real-time validation bottlenecks.\n• Won the Top-flight Performer Award for FY 2023–24.` },
+
+  { score:90, match: q => has(q,"tvastra") || has(q,"startup") || has(q,"founder") || has(q,"ceo") || has(q,"co-founder"),
+    ans:`Tvastra — CEO & Co-Founder (Feb 2023 – Jan 2024):\n\n• Led full product lifecycle: market research → vendor selection → prototyping → launch.\n• Built and managed a 5-member cross-functional team.\n• Evaluated 100+ vendors to select partners aligned with quality standards.\n• Iterated on products through continuous customer feedback loops.\n• Designed the brand experience using pricing psychology and user behavior insights.` },
+
+  { score:90, match: q => has(q,"npcil") || has(q,"nuclear"),
+    ans:`NPCIL — IT Department Intern (Jul 2023 – Nov 2023):\n\n• Developed a Remote Admin Utility for Android Mobiles to protect against device theft/misplacement in nuclear facilities.\n• Built an Android OS Hardening Tool using Android Studio, Java, Python, PHP, HTML, CSS, JavaScript, and MySQL.\n• Enabled centralized device control, app permission scrutiny, and network security enhancements.` },
+
+  { score:90, match: q => has(q,"glossaread"),
+    ans:`Glossaread Technologies — Product Marketing Intern (Apr 2022 – Jun 2022):\n\n• Conducted competitive research on 20+ EdTech products.\n• Tested early-stage messaging prototypes to refine positioning.\n• Built persona-driven communication strategies to improve user acquisition and lead conversion.` },
+
+  { score:90, match: q => has(q,"acadza"),
+    ans:`Acadza Technologies — Junior Project Manager Intern (Jan 2021 – Feb 2021):\n\n• Coordinated between 6 designers and 20+ professors to prototype and iterate on an EdTech learning platform.\n• Served 500+ students; evaluated usability and identified learning-flow friction points.\n• Managed structured feedback and iteration cycles across a large multi-stakeholder team.` },
+
+  // ── Role fit ──────────────────────────────────────────────────────────────
+
+  { score:80, match: q => has(q,"data analyst") || (has(q,"data") && has(q,"role")) || (has(q,"data") && has(q,"fit")) || (has(q,"data") && has(q,"hire")),
+    ans:`Karan as a Data Analyst:\n\n✅ 500K+ records analyzed at Marsh McLennan using Python, SQL & Power BI\n✅ Built stakeholder dashboards that improved decision clarity\n✅ Analytics for Management Decision Making — A+ at Gies\n✅ DataCamp: Python, pandas, SQL track completed\n✅ Coursera: Applying Data Analytics in Marketing (Mar 2026)\n✅ Currently: Data Analytics for Marketing & Data Storytelling at Gies\n✅ GPA: 4.0 at Gies College of Business\n\nHe combines technical data skills with strong business communication — a rare pairing.` },
+
+  { score:80, match: q => has(q,"business analyst") || (has(q,"ba") && has(q,"role")) || (has(q,"business") && has(q,"analysis")),
+    ans:`Karan as a Business Analyst:\n\n✅ Stakeholder interviews & field observations at Allcargo across 12+ warehouses\n✅ Designed VMS used by 2,000+ monthly users — from research to launch\n✅ Automated 3 workflows at Marsh McLennan with Power Apps & Power Automate\n✅ Mapped stakeholder decision journeys and behavioral insights\n✅ Top-flight Performer Award for impact-driven delivery\n✅ Operations Management (A+) and Communication Strategy (A) at Gies` },
+
+  { score:80, match: q => has(q,"product manag") || (has(q,"pm") && has(q,"role")) || (has(q,"product") && has(q,"fit")),
+    ans:`Karan as a Product Manager:\n\n✅ CEO at Tvastra — owned full product lifecycle from research to launch\n✅ Customer feedback loops, iterative prototyping, 100+ vendor evaluations\n✅ Competitive analysis on 20+ EdTech products at Glossaread\n✅ Managing Innovation — A+ at Gies\n✅ Technology Strategy — currently enrolled at Gies\n✅ Strong data skills (Python, SQL, Power BI) to back product decisions\n✅ Cross-functional leadership across designers, engineers, and executives` },
+
+  { score:80, match: q => has(q,"project manag") || (has(q,"pmp") ) || (has(q,"project") && has(q,"role")),
+    ans:`Karan as a Project Manager:\n\n✅ Project Management — A+ at Gies (Spring 2026)\n✅ CEO at Tvastra — managed a 5-member team across product, design & operations\n✅ Junior PM at Acadza — coordinated 6 designers + 20+ professors\n✅ Top-flight Performer Award at Allcargo\n✅ Leadership & Teams (A) at Gies\n✅ Automated 3 operational workflows at Marsh McLennan\n✅ Professional Pathways in Business (A) at Gies` },
+
+  { score:80, match: q => has(q,"design") && (has(q,"role") || has(q,"fit") || has(q,"ux") || has(q,"product design")),
+    ans:`Karan as a Product Designer / UX Designer:\n\n✅ HCDesign / Design Thinking / UX Design — currently enrolled at Gies\n✅ Human Computer Interaction — completed at NMIMS\n✅ Allcargo VMS — user-centric design from field research to live product\n✅ Tvastra — full brand experience design using pricing psychology and user research\n✅ Acadza — usability evaluation, learning-flow friction identification\n✅ Cross-cultural communication certifications support inclusive research` },
+
+  // ── Education ─────────────────────────────────────────────────────────────
+
+  { score:80, match: q => has(q,"gpa") || has(q,"grade") || has(q,"gies") || (has(q,"uiuc") && !has(q,"certif")),
+    ans:`Gies College of Business — UIUC:\n\nMS Technology Management | GPA: 4.0/4.0 | 2024–2026\n\nCompleted:\n• Managing Innovation — A+\n• Analytics for Management Decision Making — A+\n• Operations Management — A+\n• Project Management — A+\n• Accounting & Finance for Managers — A\n• Marketing Management — A\n• Leadership & Teams — A\n• Communication Strategy in Business — A\n• Professional Pathways in Business — A\n\nIn Progress (Spring 2026):\nData Analytics for Marketing, Technology Strategy, Enterprise Database Management, Business Intelligence, HCDesign/UXDesign, Data Storytelling` },
+
+  { score:80, match: q => has(q,"nmims") || has(q,"btech") || has(q,"b.tech") || has(q,"undergrad") || (has(q,"mumbai") && has(q,"university")),
+    ans:`NMIMS Mukesh Patel School — Mumbai:\n\nB.Tech in Information Technology | CGPA: 3.56/4.0 | 2020–2024\n\nNotable courses:\n• Data Structures & Algorithms\n• Database Management Systems\n• Machine Learning Algorithms\n• Human Computer Interaction\n• AI & Robotics\n• Software Engineering\n• Cloud Computing\n• Visual Analytics\n• Information Systems Security\n• Data Warehousing & Mining\n• Mobile Application Development\n• Final Year Project — A+` },
+
+  { score:75, match: q => has(q,"course") || has(q,"class") || has(q,"subject") || has(q,"curriculum"),
+    ans:`Key coursework across both degrees:\n\nGies (MS, GPA 4.0):\n• Managing Innovation (A+), Operations Management (A+), Analytics for Mgmt Decision Making (A+), Project Management (A+), Marketing Management (A), Leadership & Teams (A), Communication Strategy (A)\n• In progress: Data Analytics for Marketing, UXDesign, Data Storytelling, Technology Strategy, Business Intelligence, Enterprise Database Management\n\nNMIMS (B.Tech):\n• Machine Learning, HCI, Data Warehousing, Visual Analytics, Software Engineering, Cloud Computing, Database Management, AI & Robotics` },
+
+  // ── Skills general ────────────────────────────────────────────────────────
+
+  { score:70, match: q => has(q,"skill") || has(q,"tool") || has(q,"tech stack") || has(q,"technolog") || has(q,"proficien"),
+    ans:`Technical skills:\n\n• Programming: Python, SQL, Java, JavaScript, HTML, PHP, C, XML\n• Analytics & BI: Power BI, Tableau, SAS Visual Analytics, Weka\n• Low-Code: Power Apps, Power Automate\n• Databases: Dataverse, MySQL, Oracle 11g\n• AI & Prototyping: Claude AI, prompt-driven development, rapid prototyping\n• Other: Android Studio, Selenium, Cisco Packet Tracer, Acunetix\n\nSoft skills: Human-centered thinking, cross-functional collaboration, stakeholder communication, workflow redesign, strategic problem framing.` },
+
+  // ── Certifications (general — only if no specific combo matched) ──────────
+
+  { score:60, match: q => has(q,"certif") || has(q,"badge") || has(q,"credential"),
+    ans:`What area are you interested in? Karan has certifications across:\n\n• 📊 Data & Analytics — DataCamp (Python, SQL, pandas), Coursera Data Analytics in Marketing\n• 📣 Marketing — Coursera: Marketing Strategy, Marketing Mix for Growth\n• 💰 Finance — Coursera: Financial Accounting, Introduction to Finance\n• ☁️ Cloud — AWS Educate: Cloud 101\n• 💬 Communication & Leadership — 10 LinkedIn Learning courses\n\nAsk me about any specific area for details!` },
+
+  // ── Contact ───────────────────────────────────────────────────────────────
+
+  { score:70, match: q => has(q,"contact") || has(q,"email") || has(q,"phone") || has(q,"reach") || has(q,"connect") || has(q,"hire"),
+    ans:`Contact Karan:\n\n📧 kkj3@illinois.edu\n📞 +1 (217) 550-2439\n💼 linkedin.com/in/karan-jhaveri-2aa22a200\n💻 github.com/karan136-droid\n📍 Champaign, IL — open to US opportunities\n\nAvailable for Summer 2026 internships or full-time roles starting Fall 2026.` },
+
+  // ── Strengths / why hire ──────────────────────────────────────────────────
+
+  { score:70, match: q => has(q,"strength") || has(q,"why") || has(q,"stand out") || has(q,"unique") || has(q,"differenti") || has(q,"best"),
+    ans:`What makes Karan stand out:\n\n🔹 T-shaped profile — technical depth (Python, SQL, Power BI) + business strategy (4.0 GPA at Gies)\n🔹 Real product ownership — Co-founded Tvastra, ran it as CEO end-to-end\n🔹 Proven delivery — Top-flight Performer Award at Allcargo\n🔹 Enterprise-ready — Power Apps, Power Automate, Dataverse from day one\n🔹 AI-native — actively builds with Claude AI for prototyping and workflow design\n🔹 Data + communication — rare combination of analytics skills and strong interpersonal certifications` },
+
+  // ── Availability ──────────────────────────────────────────────────────────
+
+  { score:70, match: q => has(q,"availab") || has(q,"graduat") || has(q,"start") || has(q,"when") || has(q,"open to") || has(q,"looking") || has(q,"opportunit"),
+    ans:`Karan graduates from Gies (UIUC) in August 2026 with his MS in Technology Management.\n\nHe's open to:\n• Summer 2026 internships\n• Full-time roles starting Fall 2026\n\nTarget roles: Data Analyst, Business Analyst, Product Manager, Project Manager, Product/UX Designer.\n📍 Currently in Champaign, IL — open to US opportunities.\n📧 kkj3@illinois.edu` },
+
+  // ── Background / intro ────────────────────────────────────────────────────
+
+  { score:50, match: q => has(q,"background") || has(q,"who") || has(q,"about") || has(q,"introduce") || has(q,"summary") || has(q,"overview") || has(q,"tell me"),
+    ans:`Karan Jhaveri is a graduate student at Gies College of Business, UIUC, pursuing an MS in Technology Management (Class of 2026) with a perfect 4.0 GPA. He has a B.Tech in Information Technology from NMIMS Mumbai.\n\nHe has ~2 years of professional experience in data analytics (Marsh McLennan), business process automation (Allcargo Supply Chain), and product development (Tvastra, where he was CEO). He won the Top-flight Performer Award at Allcargo and carries deep expertise in Python, SQL, Power BI, and the Microsoft Power Platform.\n\nHe's targeting roles in Data Analytics, Business Analysis, Product Management, Project Management, and Product Design.` },
+
+  { score:50, match: q => has(q,"experience") || has(q,"work history") || has(q,"career") || has(q,"job"),
+    ans:`Professional experience summary:\n\n1. Marsh McLennan (Sep 2024–Jul 2025) — Data Analytics Specialist: 500K+ record analysis, Power BI dashboards, 3 workflow automations.\n\n2. Allcargo Supply Chain (Dec 2023–Jun 2024) — Business Excellence Intern: Built VMS for 12+ warehouses, 2,000+ users, won Top-flight Performer Award.\n\n3. Tvastra (Feb 2023–Jan 2024) — CEO & Co-Founder: End-to-end product development, 5-member team, 100+ vendors evaluated.\n\n4. NPCIL (Jul–Nov 2023) — IT Intern: Android security tools for nuclear facilities.\n\n5. Glossaread (Apr–Jun 2022) — Product Marketing Intern: Competitive analysis of 20+ EdTech products.\n\n6. Acadza (Jan–Feb 2021) — Junior PM Intern: Coordinated 6 designers + 20+ professors.` },
+];
+
+function has(q, term) { return q.includes(term); }
+
+const SUGGESTIONS = {
+  all:     ["Tell me about Karan","Walk me through his experience","What are his strongest skills?","Why should I hire him?"],
+  data:    ["Python & SQL experience?","Data certifications?","Power BI work?","Data Analytics at Marsh McLennan?"],
+  ba:      ["Business analysis experience?","Allcargo VMS project?","Process automation work?","Stakeholder management?"],
+  pm:      ["Project Management course grade?","Cross-functional leadership?","Tvastra CEO experience?","PM certifications?"],
+  product: ["Tvastra startup story?","Customer research approach?","Marketing certifications?","Product dev experience?"],
+  design:  ["UX/design coursework?","User research experience?","HCI background?","Design thinking projects?"]
+};
+
+let role = "all";
+
+function renderChips(r) {
+  document.getElementById("chips").innerHTML =
+    (SUGGESTIONS[r] || SUGGESTIONS.all)
+      .map(s => `<div class="chip" onclick="askChip('${s.replace(/'/g,"&#39;")}')">${s}</div>`)
+      .join("");
+}
+
+function askChip(q) { document.getElementById("inp").value = q; send(); }
+
+function addMsg(text, type) {
+  const msgs = document.getElementById("msgs");
+  const d = document.createElement("div");
+  d.className = "msg " + type;
+  d.textContent = text;
+  msgs.appendChild(d);
+  msgs.scrollTop = msgs.scrollHeight;
+  return d;
+}
+
+function findAnswer(raw) {
+  const q = raw.toLowerCase();
+  let best = null, bestScore = -1;
+  for (const item of KB) {
+    if (item.match(q) && item.score > bestScore) {
+      bestScore = item.score;
+      best = item;
+    }
+  }
+  if (best) return best.ans;
+
+  // Graceful fallback
+  return "I didn't quite catch that — could you rephrase? You can ask about Karan's education, work experience, specific companies (Marsh McLennan, Allcargo, Tvastra), skills (Python, SQL, Power BI), certifications by topic, or his fit for a specific role.";
+}
+
+function send() {
+  const inp = document.getElementById("inp");
+  const q = inp.value.trim();
+  if (!q) return;
+  inp.value = "";
+  addMsg(q, "u");
+  const typing = addMsg("Thinking...", "b typing");
+  setTimeout(() => {
+    typing.textContent = findAnswer(q);
+    typing.classList.remove("typing");
+    document.getElementById("msgs").scrollTop = 9999;
+  }, 380);
+}
+
+document.querySelectorAll(".pill").forEach(p => {
+  p.addEventListener("click", function () {
+    document.querySelectorAll(".pill").forEach(x => x.classList.remove("active"));
+    this.classList.add("active");
+    role = this.dataset.role;
+    renderChips(role);
+    document.getElementById("msgs").innerHTML = "";
+    const g = {
+      all:     "Hi! I'm Karan's portfolio assistant. Ask me anything about his background, skills, or experience.",
+      data:    "Switched to Data Analyst view. Ask about Python, SQL, Power BI, analytics projects, or data certifications!",
+      ba:      "Switched to Business Analyst view. Ask about process automation, the Allcargo VMS, or stakeholder work.",
+      pm:      "Switched to Project Management view. Ask about PM credentials, cross-functional leadership, or delivery experience.",
+      product: "Switched to Product Management view. Ask about Tvastra, customer research, or product strategy experience.",
+      design:  "Switched to Product Design view. Ask about UX coursework, user research, or the VMS Karan designed."
+    };
+    addMsg(g[role] || g.all, "b");
+  });
+});
+
+document.getElementById("sendBtn").onclick = send;
+document.getElementById("inp").addEventListener("keydown", e => {
+  if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); send(); }
+});
+
+renderChips("all");
+addMsg("Hi! I'm Karan's portfolio assistant. Use the role filters above to focus the conversation, or just ask me anything!", "b");
+</script>
+</body>
+</html>
